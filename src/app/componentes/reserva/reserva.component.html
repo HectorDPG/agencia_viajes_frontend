@@ -1,0 +1,409 @@
+<div class="reserva-container">
+  <!-- Header de Reserva -->
+  <div class="reserva-header">
+    <button class="btn-back" (click)="volver()">
+      <span class="icon">←</span>
+      Volver
+    </button>
+    <h1 class="title">Completar Reserva</h1>
+    <p class="subtitle">Estás a un paso de tu próxima aventura</p>
+  </div>
+
+  <!-- Información del Destino Seleccionado -->
+  <div class="destino-seleccionado" *ngIf="destinoSeleccionado">
+    <div class="destino-imagen">
+      <img [src]="destinoSeleccionado.imagen" [alt]="destinoSeleccionado.nombre">
+      <div class="destino-overlay">
+        <h3>{{ destinoSeleccionado.nombre }}</h3>
+        <p>{{ destinoSeleccionado.ubicacion }}</p>
+      </div>
+    </div>
+    <div class="destino-info">
+      <div class="info-item">
+        <span class="label">Duración:</span>
+        <span class="value">{{ destinoSeleccionado.duracion }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Precio:</span>
+        <span class="value price">{{ destinoSeleccionado.precio }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Rating:</span>
+        <span class="value">⭐ {{ destinoSeleccionado.rating }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de Reserva -->
+  <form class="reserva-form" (ngSubmit)="guardarReserva()" #reservaForm="ngForm">
+    
+    <!-- Sección: Información Personal -->
+    <div class="form-section">
+      <h2 class="section-title">
+        <span class="icon">👤</span>
+        Información Personal
+      </h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombres">Nombres *</label>
+          <input
+            type="text"
+            id="nombres"
+            name="nombres"
+            [(ngModel)]="reserva.nombres"
+            required
+            placeholder="Ingresa tus nombres"
+            [class.error]="reservaForm.submitted && nombres.invalid"
+            #nombres="ngModel"
+          >
+          <span class="error-message" *ngIf="reservaForm.submitted && nombres.invalid">
+            Los nombres son obligatorios
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="apellidos">Apellidos *</label>
+          <input
+            type="text"
+            id="apellidos"
+            name="apellidos"
+            [(ngModel)]="reserva.apellidos"
+            required
+            placeholder="Ingresa tus apellidos"
+            [class.error]="reservaForm.submitted && apellidos.invalid"
+            #apellidos="ngModel"
+          >
+          <span class="error-message" *ngIf="reservaForm.submitted && apellidos.invalid">
+            Los apellidos son obligatorios
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Correo Electrónico *</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="reserva.email"
+            required
+            email
+            placeholder="tu@email.com"
+            [class.error]="reservaForm.submitted && email.invalid"
+            #email="ngModel"
+          >
+          <span class="error-message" *ngIf="reservaForm.submitted && email.invalid">
+            Ingresa un email válido
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono *</label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            [(ngModel)]="reserva.telefono"
+            required
+            placeholder="+51 999 999 999"
+            [class.error]="reservaForm.submitted && telefono.invalid"
+            #telefono="ngModel"
+          >
+          <span class="error-message" *ngIf="reservaForm.submitted && telefono.invalid">
+            El teléfono es obligatorio
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="documento">Tipo de Documento *</label>
+          <select
+            id="documento"
+            name="tipoDocumento"
+            [(ngModel)]="reserva.tipoDocumento"
+            required
+            [class.error]="reservaForm.submitted && tipoDocumento.invalid"
+            #tipoDocumento="ngModel"
+          >
+            <option value="">Seleccionar</option>
+            <option value="dni">DNI</option>
+            <option value="pasaporte">Pasaporte</option>
+            <option value="ce">Carné de Extranjería</option>
+          </select>
+          <span class="error-message" *ngIf="reservaForm.submitted && tipoDocumento.invalid">
+            Selecciona un tipo de documento
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="numeroDocumento">Número de Documento *</label>
+          <input
+            type="text"
+            id="numeroDocumento"
+            name="numeroDocumento"
+            [(ngModel)]="reserva.numeroDocumento"
+            required
+            placeholder="Número de documento"
+            [class.error]="reservaForm.submitted && numeroDocumento.invalid"
+            #numeroDocumento="ngModel"
+          >
+          <span class="error-message" *ngIf="reservaForm.submitted && numeroDocumento.invalid">
+            El número de documento es obligatorio
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Detalles del Viaje -->
+    <div class="form-section">
+      <h2 class="section-title">
+        <span class="icon">✈️</span>
+        Detalles del Viaje
+      </h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fechaSalida">Fecha de Salida *</label>
+          <input
+            type="date"
+            id="fechaSalida"
+            name="fechaSalida"
+            [(ngModel)]="reserva.fechaSalida"
+            required
+            [min]="fechaMinima"
+            [class.error]="reservaForm.submitted && fechaSalida.invalid"
+            #fechaSalida="ngModel"
+            (change)="calcularFechaRegreso()"
+          >
+          <span class="error-message" *ngIf="reservaForm.submitted && fechaSalida.invalid">
+            Selecciona una fecha de salida
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="fechaRegreso">Fecha de Regreso</label>
+          <input
+            type="date"
+            id="fechaRegreso"
+            name="fechaRegreso"
+            [(ngModel)]="reserva.fechaRegreso"
+            [min]="reserva.fechaSalida"
+            readonly
+          >
+          <small class="help-text">Se calcula automáticamente según la duración</small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="numeroPersonas">Número de Personas *</label>
+          <div class="counter-input">
+            <button type="button" class="btn-counter" (click)="decrementarPersonas()" [disabled]="reserva.numeroPersonas <= 1">
+              -
+            </button>
+            <input
+              type="number"
+              id="numeroPersonas"
+              name="numeroPersonas"
+              [(ngModel)]="reserva.numeroPersonas"
+              required
+              min="1"
+              max="10"
+              readonly
+              (ngModelChange)="calcularPrecioTotal()"
+            >
+            <button type="button" class="btn-counter" (click)="incrementarPersonas()" [disabled]="reserva.numeroPersonas >= 10">
+              +
+            </button>
+          </div>
+          <small class="help-text">Máximo 10 personas por reserva</small>
+        </div>
+
+        <div class="form-group">
+          <label for="tipoHabitacion">Tipo de Habitación *</label>
+          <select
+            id="tipoHabitacion"
+            name="tipoHabitacion"
+            [(ngModel)]="reserva.tipoHabitacion"
+            required
+            [class.error]="reservaForm.submitted && tipoHabitacion.invalid"
+            #tipoHabitacion="ngModel"
+            (change)="calcularPrecioTotal()"
+          >
+            <option value="">Seleccionar</option>
+            <option value="simple">Simple</option>
+            <option value="doble">Doble</option>
+            <option value="triple">Triple</option>
+            <option value="suite">Suite</option>
+          </select>
+          <span class="error-message" *ngIf="reservaForm.submitted && tipoHabitacion.invalid">
+            Selecciona un tipo de habitación
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Servicios Adicionales -->
+    <div class="form-section">
+      <h2 class="section-title">
+        <span class="icon">➕</span>
+        Servicios Adicionales
+      </h2>
+
+      <div class="servicios-grid">
+        <label class="checkbox-card">
+          <input
+            type="checkbox"
+            name="seguroViaje"
+            [(ngModel)]="reserva.servicios.seguroViaje"
+            (change)="calcularPrecioTotal()"
+          >
+          <div class="checkbox-content">
+            <span class="checkbox-icon">🛡️</span>
+            <div class="checkbox-text">
+              <strong>Seguro de Viaje</strong>
+              <span class="checkbox-price">+$50</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="checkbox-card">
+          <input
+            type="checkbox"
+            name="trasladoAeropuerto"
+            [(ngModel)]="reserva.servicios.trasladoAeropuerto"
+            (change)="calcularPrecioTotal()"
+          >
+          <div class="checkbox-content">
+            <span class="checkbox-icon">🚗</span>
+            <div class="checkbox-text">
+              <strong>Traslado Aeropuerto</strong>
+              <span class="checkbox-price">+$80</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="checkbox-card">
+          <input
+            type="checkbox"
+            name="guiaTuristico"
+            [(ngModel)]="reserva.servicios.guiaTuristico"
+            (change)="calcularPrecioTotal()"
+          >
+          <div class="checkbox-content">
+            <span class="checkbox-icon">🗺️</span>
+            <div class="checkbox-text">
+              <strong>Guía Turístico</strong>
+              <span class="checkbox-price">+$120</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="checkbox-card">
+          <input
+            type="checkbox"
+            name="toursAdicionales"
+            [(ngModel)]="reserva.servicios.toursAdicionales"
+            (change)="calcularPrecioTotal()"
+          >
+          <div class="checkbox-content">
+            <span class="checkbox-icon">🎟️</span>
+            <div class="checkbox-text">
+              <strong>Tours Adicionales</strong>
+              <span class="checkbox-price">+$200</span>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Sección: Observaciones -->
+    <div class="form-section">
+      <h2 class="section-title">
+        <span class="icon">📝</span>
+        Observaciones
+      </h2>
+
+      <div class="form-group">
+        <label for="observaciones">Comentarios o Solicitudes Especiales</label>
+        <textarea
+          id="observaciones"
+          name="observaciones"
+          [(ngModel)]="reserva.observaciones"
+          rows="4"
+          placeholder="Escribe aquí cualquier solicitud especial, requerimientos alimenticios, celebraciones, etc."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Resumen de Precio -->
+    <div class="precio-resumen">
+      <div class="resumen-content">
+        <div class="resumen-item">
+          <span>Precio Base:</span>
+          <span>${{ precioBase.toFixed(2) }}</span>
+        </div>
+        <div class="resumen-item" *ngIf="reserva.numeroPersonas > 1">
+          <span>Personas ({{ reserva.numeroPersonas }}):</span>
+          <span>${{ (precioBase * reserva.numeroPersonas).toFixed(2) }}</span>
+        </div>
+        <div class="resumen-item" *ngIf="costoServicios > 0">
+          <span>Servicios Adicionales:</span>
+          <span>+${{ costoServicios.toFixed(2) }}</span>
+        </div>
+        <div class="resumen-divider"></div>
+        <div class="resumen-total">
+          <span>Total a Pagar:</span>
+          <span class="total-amount">${{ precioTotal.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="procesando">
+        <span *ngIf="!procesando">
+          <span class="icon">✓</span>
+          Confirmar Reserva
+        </span>
+        <span *ngIf="procesando">
+          <span class="spinner"></span>
+          Procesando...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Modal de Confirmación -->
+<div class="modal-overlay" *ngIf="mostrarConfirmacion" (click)="cerrarConfirmacion()">
+  <div class="modal-confirmacion" (click)="$event.stopPropagation()">
+    <div class="modal-icon success">
+      <span>✓</span>
+    </div>
+    <h2>¡Reserva Confirmada!</h2>
+    <p class="modal-message">
+      Tu reserva ha sido procesada exitosamente. Recibirás un correo de confirmación con todos los detalles.
+    </p>
+    <div class="modal-details">
+      <p><strong>Código de Reserva:</strong> {{ codigoReserva }}</p>
+      <p><strong>Destino:</strong> {{ destinoSeleccionado?.nombre }}</p>
+      <p><strong>Fecha de Salida:</strong> {{ reserva.fechaSalida | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Total:</strong> ${{ precioTotal.toFixed(2) }}</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" (click)="irAMisReservas()">
+        Ver Mis Reservas
+      </button>
+      <button class="btn-secondary" (click)="cerrarConfirmacion()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

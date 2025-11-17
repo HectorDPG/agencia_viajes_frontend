@@ -1,0 +1,147 @@
+<div class="destino-container">
+  <!-- Header -->
+  <div class="header">
+    <h1 class="title">Descubre Tu Próximo Destino</h1>
+    <p class="subtitle">Explora los lugares más increíbles del mundo</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="region">Región</label>
+      <select id="region" [(ngModel)]="filtroRegion" (change)="filtrarDestinos()">
+        <option value="">Todas las regiones</option>
+        <option value="europa">Europa</option>
+        <option value="america">América</option>
+        <option value="asia">Asia</option>
+        <option value="africa">África</option>
+        <option value="oceania">Oceanía</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="tipo">Tipo de viaje</label>
+      <select id="tipo" [(ngModel)]="filtroTipo" (change)="filtrarDestinos()">
+        <option value="">Todos los tipos</option>
+        <option value="playa">Playa</option>
+        <option value="ciudad">Ciudad</option>
+        <option value="aventura">Aventura</option>
+        <option value="cultural">Cultural</option>
+        <option value="naturaleza">Naturaleza</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="presupuesto">Presupuesto</label>
+      <select id="presupuesto" [(ngModel)]="filtroPresupuesto" (change)="filtrarDestinos()">
+        <option value="">Cualquier presupuesto</option>
+        <option value="bajo">Económico ($ - $$)</option>
+        <option value="medio">Moderado ($$ - $$$)</option>
+        <option value="alto">Premium ($$$+)</option>
+      </select>
+    </div>
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">
+      Limpiar Filtros
+    </button>
+  </div>
+
+  <!-- Grid de Destinos -->
+  <div class="destinos-grid">
+    <div class="destino-card" *ngFor="let destino of destinosFiltrados">
+      <div class="card-image">
+        <img [src]="destino.imagen" [alt]="destino.nombre">
+        <div class="card-badge" [class.badge-popular]="destino.popular">
+          {{ destino.popular ? '🔥 Popular' : destino.tipo }}
+        </div>
+        <div class="card-price">{{ destino.precio }}</div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-header">
+          <h3 class="card-title">{{ destino.nombre }}</h3>
+          <div class="card-rating">
+            <span class="star">⭐</span>
+            <span class="rating-number">{{ destino.rating }}</span>
+          </div>
+        </div>
+
+        <p class="card-location">📍 {{ destino.ubicacion }}</p>
+        <p class="card-description">{{ destino.descripcion }}</p>
+
+        <div class="card-features">
+          <span class="feature" *ngFor="let caracteristica of destino.caracteristicas">
+            {{ caracteristica }}
+          </span>
+        </div>
+
+        <div class="card-footer">
+          <div class="duration">
+            <span class="icon">🕒</span>
+            {{ destino.duracion }}
+          </div>
+          <button class="btn-ver-mas" (click)="verDetalles(destino)">
+            Ver Detalles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje si no hay resultados -->
+  <div class="no-results" *ngIf="destinosFiltrados.length === 0">
+    <div class="no-results-icon">🔍</div>
+    <h3>No se encontraron destinos</h3>
+    <p>Intenta ajustar los filtros para ver más opciones</p>
+  </div>
+
+  <!-- Modal de detalles -->
+  <div class="modal-overlay" *ngIf="destinoSeleccionado" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
+      
+      <div class="modal-image">
+        <img [src]="destinoSeleccionado.imagen" [alt]="destinoSeleccionado.nombre">
+      </div>
+
+      <div class="modal-body">
+        <h2>{{ destinoSeleccionado.nombre }}</h2>
+        <p class="modal-location">📍 {{ destinoSeleccionado.ubicacion }}</p>
+        
+        <div class="modal-info">
+          <div class="info-item">
+            <strong>Duración:</strong> {{ destinoSeleccionado.duracion }}
+          </div>
+          <div class="info-item">
+            <strong>Tipo:</strong> {{ destinoSeleccionado.tipo }}
+          </div>
+          <div class="info-item">
+            <strong>Región:</strong> {{ destinoSeleccionado.region }}
+          </div>
+          <div class="info-item">
+            <strong>Rating:</strong> ⭐ {{ destinoSeleccionado.rating }}
+          </div>
+        </div>
+
+        <div class="modal-description">
+          <h3>Descripción</h3>
+          <p>{{ destinoSeleccionado.descripcionCompleta }}</p>
+        </div>
+
+        <div class="modal-features">
+          <h3>Incluye</h3>
+          <ul>
+            <li *ngFor="let item of destinoSeleccionado.incluye">{{ item }}</li>
+          </ul>
+        </div>
+
+        <div class="modal-footer">
+          <div class="modal-price">{{ destinoSeleccionado.precio }}</div>
+          <button class="btn-reservar" (click)="reservar(destinoSeleccionado)">
+            Reservar Ahora
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

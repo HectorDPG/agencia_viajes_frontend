@@ -1,0 +1,191 @@
+<header class="header-container">
+  <div class="header-content">
+    <!-- Logo y Nombre -->
+    <div class="logo-section">
+      <div class="logo">
+        <span class="logo-icon">✈️</span>
+        <span class="logo-text">ViajesPlus</span>
+      </div>
+    </div>
+
+    <!-- Navegación Desktop -->
+    <nav class="nav-desktop">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="#" class="nav-link" [class.active]="rutaActiva === 'inicio'" (click)="navegarA('inicio')">
+            Inicio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" [class.active]="rutaActiva === 'destinos'" (click)="navegarA('destinos')">
+            Destinos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" [class.active]="rutaActiva === 'paquetes'" (click)="navegarA('paquetes')">
+            Paquetes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" [class.active]="rutaActiva === 'ofertas'" (click)="navegarA('ofertas')">
+            Ofertas
+            <span class="badge-hot">HOT</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" [class.active]="rutaActiva === 'nosotros'" (click)="navegarA('nosotros')">
+            Nosotros
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" [class.active]="rutaActiva === 'contacto'" (click)="navegarA('contacto')">
+            Contacto
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Acciones -->
+    <div class="actions-section">
+      <!-- Búsqueda -->
+      <button class="btn-icon" (click)="toggleBusqueda()" title="Buscar">
+        <span class="icon">🔍</span>
+      </button>
+
+      <!-- Favoritos -->
+      <button class="btn-icon" (click)="abrirFavoritos()" title="Favoritos">
+        <span class="icon">❤️</span>
+        <span class="badge-count" *ngIf="cantidadFavoritos > 0">{{ cantidadFavoritos }}</span>
+      </button>
+
+      <!-- Carrito -->
+      <button class="btn-icon" (click)="abrirCarrito()" title="Carrito">
+        <span class="icon">🛒</span>
+        <span class="badge-count" *ngIf="cantidadCarrito > 0">{{ cantidadCarrito }}</span>
+      </button>
+
+      <!-- Usuario -->
+      <div class="user-menu" [class.open]="menuUsuarioAbierto">
+        <button class="btn-user" (click)="toggleMenuUsuario()">
+          <span class="user-avatar">{{ inicialUsuario }}</span>
+          <span class="user-name">{{ nombreUsuario }}</span>
+          <span class="icon-arrow">▼</span>
+        </button>
+
+        <div class="dropdown-menu" *ngIf="menuUsuarioAbierto">
+          <a href="#" class="dropdown-item" (click)="navegarA('perfil')">
+            <span class="item-icon">👤</span>
+            Mi Perfil
+          </a>
+          <a href="#" class="dropdown-item" (click)="navegarA('reservas')">
+            <span class="item-icon">📋</span>
+            Mis Reservas
+          </a>
+          <a href="#" class="dropdown-item" (click)="navegarA('configuracion')">
+            <span class="item-icon">⚙️</span>
+            Configuración
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item" (click)="cerrarSesion()">
+            <span class="item-icon">🚪</span>
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
+
+      <!-- Menú Móvil Toggle -->
+      <button class="btn-mobile-menu" (click)="toggleMenuMovil()">
+        <span class="hamburger" [class.active]="menuMovilAbierto">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de Búsqueda Expandible -->
+  <div class="search-bar" [class.active]="busquedaAbierta">
+    <div class="search-container">
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar destinos, ciudades, países..."
+        [(ngModel)]="terminoBusqueda"
+        (keyup.enter)="buscar()"
+      >
+      <button class="btn-search" (click)="buscar()">
+        Buscar
+      </button>
+      <button class="btn-close-search" (click)="toggleBusqueda()">
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <!-- Menú Móvil -->
+  <div class="mobile-menu" [class.active]="menuMovilAbierto">
+    <nav class="mobile-nav">
+      <ul class="mobile-nav-list">
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" [class.active]="rutaActiva === 'inicio'" (click)="navegarA('inicio')">
+            <span class="mobile-icon">🏠</span>
+            Inicio
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" [class.active]="rutaActiva === 'destinos'" (click)="navegarA('destinos')">
+            <span class="mobile-icon">🌍</span>
+            Destinos
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" [class.active]="rutaActiva === 'paquetes'" (click)="navegarA('paquetes')">
+            <span class="mobile-icon">📦</span>
+            Paquetes
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" [class.active]="rutaActiva === 'ofertas'" (click)="navegarA('ofertas')">
+            <span class="mobile-icon">🔥</span>
+            Ofertas
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" [class.active]="rutaActiva === 'nosotros'" (click)="navegarA('nosotros')">
+            <span class="mobile-icon">ℹ️</span>
+            Nosotros
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" [class.active]="rutaActiva === 'contacto'" (click)="navegarA('contacto')">
+            <span class="mobile-icon">📧</span>
+            Contacto
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" (click)="navegarA('perfil')">
+            <span class="mobile-icon">👤</span>
+            Mi Perfil
+          </a>
+        </li>
+        <li class="mobile-nav-item">
+          <a href="#" class="mobile-nav-link" (click)="navegarA('reservas')">
+            <span class="mobile-icon">📋</span>
+            Mis Reservas
+          </a>
+        </li>
+      </ul>
+
+      <div class="mobile-footer">
+        <button class="btn-logout-mobile" (click)="cerrarSesion()">
+          <span class="mobile-icon">🚪</span>
+          Cerrar Sesión
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Overlay para cerrar menús -->
+  <div class="overlay" [class.active]="menuMovilAbierto || menuUsuarioAbierto" (click)="cerrarMenus()"></div>
+</header>
